@@ -14,6 +14,7 @@ import Redis from 'ioredis';
 import session from 'express-session';
 import cors from "cors";
 import k from "../keys";
+import path from "path";
 
 
 const main = async () => {
@@ -24,8 +25,10 @@ const main = async () => {
         password: k.password,
         logging: true,
         synchronize: true,
+        migrations: [path.join(__dirname, "./migrations/*")],
         entities: [User, Post],
-    })
+    });
+    await (await conn).runMigrations();
 
     const app = express();
     
