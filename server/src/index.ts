@@ -15,6 +15,7 @@ import session from 'express-session';
 import cors from "cors";
 import k from "../keys";
 import path from "path";
+import { Updoot } from "./entities/Updoot";
 
 
 const main = async () => {
@@ -26,7 +27,7 @@ const main = async () => {
         logging: true,
         synchronize: true,
         migrations: [path.join(__dirname, "./migrations/*")],
-        entities: [User, Post],
+        entities: [User, Post,Updoot],
     });
     await (await conn).runMigrations();
 

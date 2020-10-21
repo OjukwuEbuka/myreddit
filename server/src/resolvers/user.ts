@@ -1,5 +1,16 @@
 import { MyContext } from "src/types";
-import { Resolver, Query, Mutation, Field, Ctx, Arg, Int, ObjectType } from "type-graphql";
+import { 
+    Resolver, 
+    Query, 
+    Mutation, 
+    Field, 
+    Ctx, 
+    Arg, 
+    Int, 
+    ObjectType, 
+    FieldResolver, 
+    Root, 
+} from "type-graphql";
 import { User } from "../entities/User";
 import argon2 from "argon2";
 import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constants";
@@ -26,8 +37,18 @@ class UserResponse {
     user?: User;
 }
 
-@Resolver()
+@Resolver(User)
 export class UserResolver {
+    @FieldResolver(() => String)
+    email(@Root() user:User, @Ctx() {req}: MyContext) {
+        if (req.session.userId === user.id){
+            //allow current usr to view only their own email
+            return user.email;
+        }
+        // disallow  user from  viewing other emails
+        return "";
+    }
+
     @Mutation(() => UserResponse)
     async changePassword(
         @Arg('token') token: string,
